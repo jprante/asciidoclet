@@ -1,0 +1,165 @@
+
+= Asciidoclet for Java 9
+
+This https://github.com/jprante/asciidoclet[Asciidoclet] for Java 9 is a
+derived work of the original https://github.com/jprante/asciidoclet[Asciidoclet]
+which is a Javadoc Doclet that uses http://asciidoctor.org[Asciidoctor] (via the
+https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
+to interpret http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
+
+== Usage
+
+IMPORTANT: This doclet requires Java 9.
+
+Asciidoclet may be used via a custom doclet in Gradle:
+
+[source]
+----
+configurations {
+    asciidoclet
+}
+
+dependencies {
+    asciidoclet "org.xbib:asciidoclet:1.5.6.0"
+}
+
+javadoc {
+    options.docletpath = configurations.asciidoclet.files.asType(List)
+    options.doclet = 'org.xbib.asciidoctor.Asciidoclet'
+    options.overview = "src/docs/asciidoclet/overview.adoc"
+    options.addStringOption "-base-dir", "${projectDir}"
+    options.addStringOption "-attribute",
+            "name=${project.name},version=${project.version},title-link=https://github.com/foobar"
+    configure(options) {
+        noTimestamp = true
+    }
+}
+----
+
+== Examples
+
+Code block (with syntax highlighting added by CodeRay)::
++
+[source,java]
+--
+/**
+ * = Asciidoclet
+ *
+ * A Javadoc Doclet that uses http://asciidoctor.org[Asciidoctor]
+ * to render http://asciidoc.org[AsciiDoc] markup in Javadoc comments.
+ *
+ * @author https://github.com/johncarl81[John Ericksen]
+ *\/
+public class Asciidoclet extends Doclet {
+    private final Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <1>
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static boolean start(RootDoc rootDoc) {
+        new Asciidoclet().render(rootDoc); // <2>
+        return Standard.start(rootDoc);
+    }
+}
+--
+<1> Creates an instance of the Asciidoctor Java integration
+<2> Runs Javadoc comment strings through Asciidoctor
+
+Inline code:: `code()` or +code()+
+
+Headings::
++
+--
+[float]
+= Heading 1
+
+[float]
+== Heading 2
+
+[float]
+=== Heading 3
+
+[float]
+==== Heading 4
+
+[float]
+===== Heading 5
+--
+
+Links::
+Doc Writer <doc@example.com> +
+http://asciidoc.org[AsciiDoc] is a lightweight markup language. +
+Learn more about it at http://asciidoctor.org. +
+
+Bullets::
++
+--
+.Unnumbered
+* bullet
+* bullet
+- bullet
+- bullet
+* bullet
+** bullet
+** bullet
+*** bullet
+*** bullet
+**** bullet
+**** bullet
+***** bullet
+***** bullet
+**** bullet
+*** bullet
+** bullet
+* bullet
+--
++
+--
+.Numbered
+. bullet
+. bullet
+.. bullet
+.. bullet
+. bullet
+.. bullet
+... bullet
+... bullet
+.... bullet
+.... bullet
+... bullet
+... bullet
+.. bullet
+.. bullet
+. bullet
+--
+
+Tables::
++
+.An example table
+[cols="3", options="header"]
+|===
+|Column 1
+|Column 2
+|Column 3
+
+|1
+|Item 1
+|a
+
+|2
+|Item 2
+|b
+
+|3
+|Item 3
+|c
+|===
+
+Sidebar block::
++
+.Optional Title
+****
+Usage: Notes in a sidebar, naturally.
+****
+
+Admonitions::
++
+IMPORTANT: Check this out!

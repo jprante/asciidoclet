@@ -1,0 +1,8 @@
+ext {
+    user = 'jprante'
+    projectName = 'asciidoclet'
+    projectDescription = 'Asciidoclet for Java 9'
+    scmUrl = "https://github.com/${user}/${projectName}"
+    scmConnection = "scm:git:git://github.com/${user}/${projectName}.git"
+    scmDeveloperConnection = "scm:git:git://github.com/${user}/${projectName}.git"
+}

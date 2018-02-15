@@ -1,0 +1,66 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "2.0.2"
+    id "io.codearte.nexus-staging" version "0.11.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: "io.codearte.nexus-staging"
+
+configurations {
+    wagon
+}
+
+dependencies {
+    compile "org.asciidoctor:asciidoctorj:${project.property('asciidoctorj.version')}"
+    compile "org.jruby:jruby:${project.property('jruby.version')}"
+    compile "com.google.guava:guava:${project.property('guava.version')}"
+    testCompile("junit:junit:${project.property('junit.version')}") {
+        transitive = false
+    }
+    testCompile "org.mockito:mockito-core:${project.property('mockito.version')}"
+    testCompile "org.powermock:powermock-module-junit4:${project.property('powermock.version')}"
+    testCompile "org.powermock:powermock-api-mockito2:${project.property('powermock.version')}"
+    testCompile "org.hamcrest:hamcrest-all:${project.property('hamcrest.version')}"
+    wagon "org.apache.maven.wagon:wagon-ssh:${project.property('wagon.version')}"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_9
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:all"
+}
+
+task javadocJar(type: Jar, dependsOn: classes) {
+    from javadoc
+    classifier 'javadoc'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+    classifier 'sources'
+}
+
+artifacts {
+    archives javadocJar, sourcesJar, shadowJar
+}
+
+shadowJar {
+    artifacts {
+        shadow(tasks.shadowJar.archivePath) {
+            builtBy shadowJar
+        }
+    }
+}
+
+if (project.hasProperty('signing.keyId')) {
+    signing {
+        sign configurations.archives
+    }
+}
+
+apply from: 'gradle/ext.gradle'
+apply from: 'gradle/publish.gradle'
