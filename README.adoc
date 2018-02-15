@@ -2,7 +2,7 @@
 = Asciidoclet for Java 9
 
 This https://github.com/jprante/asciidoclet[Asciidoclet] for Java 9 is a
-derived work of the original https://github.com/jprante/asciidoclet[Asciidoclet]
+derived work of the original https://github.com/asciidoctor/asciidoclet[Asciidoclet]
 which is a Javadoc Doclet that uses http://asciidoctor.org[Asciidoctor] (via the
 https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
 to interpret http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
